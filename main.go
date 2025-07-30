@@ -18,6 +18,16 @@ var (
 	namespace = flag.String("n", "", "namespace to test")
 )
 
+func whoami(ctx context.Context, cl *kubernetes.Clientset) error {
+	res, err := cl.AuthenticationV1().SelfSubjectReviews().Create(ctx, &authenticationv1.SelfSubjectReview{}, metav1.CreateOptions{})
+	if err != nil {
+		return fmt.Errorf("failed to create self subject review: %w", err)
+	}
+
+	fmt.Println(res.Status.UserInfo.Username)
+	return nil
+}
+
 func canI(ctx context.Context, cl *kubernetes.Clientset) error {
 	req := &authorizationv1.SelfSubjectAccessReview{
 		Spec: authorizationv1.SelfSubjectAccessReviewSpec{
@@ -42,16 +52,6 @@ func canI(ctx context.Context, cl *kubernetes.Clientset) error {
 	} else {
 		fmt.Println("no")
 	}
-	return nil
-}
-
-func whoami(ctx context.Context, cl *kubernetes.Clientset) error {
-	res, err := cl.AuthenticationV1().SelfSubjectReviews().Create(ctx, &authenticationv1.SelfSubjectReview{}, metav1.CreateOptions{})
-	if err != nil {
-		return fmt.Errorf("failed to create self subject review: %w", err)
-	}
-
-	fmt.Println(res.Status.UserInfo.Username)
 	return nil
 }
 

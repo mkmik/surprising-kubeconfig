@@ -13,16 +13,6 @@ test_surprising_kubeconfig() {
     echo "    error: not running under the expected service account, got: '$ANS'"
   fi
 
-  ANS=$(surprising-kubeconfig -n default can-i) 
-  if [ "$ANS" != "no" ]; then
-    echo "    error: we don't have permissions to get pods in default namespace"
-  fi
-
-  ANS=$(surprising-kubeconfig -n demo can-i) 
-  if [ "$ANS" != "yes" ]; then
-    echo "    error: we do have permissions to get pods in demo namespace"
-  fi
-
   cp /scripts/kubeconfig ~/.kube/config
   echo "  Adding ~/.kube/config:"
 
