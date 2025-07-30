@@ -40,6 +40,23 @@ test_kubectl() {
   if [ "$ANS" != "yes" ]; then
     echo "    error: since we have permissions, the default namespace cannot be 'default'"
   fi
+
+  unset KUBECONFIG
+  cp /scripts/kubeconfig ~/.kube/config
+  echo "  Adding ~/.kube/config:"
+
+  # the kubeconfig impersonates as demo user, so we can check whether kubectl actually loaded the kubeconfig
+  ANS=$(kubectl auth whoami -ojsonpath="{.status.userInfo.username}")
+  if [ "$ANS" != "demo" ]; then
+    echo "    error: not running under the expected service account but running under: $ANS"
+  fi
+
+  # interestingly, the kubeconfig doesn't set the default namespace, but kubectl
+  # honurs the one set in /var/run/secrets/kubernetes.io/serviceaccount/namespace anyway
+  ANS=$(kubectl auth can-i get pod) 
+  if [ "$ANS" != "yes" ]; then
+    echo "    error: since we have permissions, the default namespace cannot be 'default'"
+  fi
 }
 
 test_kubectl || true
