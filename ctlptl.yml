@@ -1,0 +1,12 @@
+# ctlptl apply -f ctrlptl.yml
+#
+# https://github.com/tilt-dev/ctlptl?tab=readme-ov-file#how-do-i-install-it
+
+apiVersion: ctlptl.dev/v1alpha1
+kind: Registry
+name: ctlptl-registry
+---
+apiVersion: ctlptl.dev/v1alpha1
+kind: Cluster
+product: kind
+registry: ctlptl-registry

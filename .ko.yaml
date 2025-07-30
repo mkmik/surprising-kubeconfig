@@ -1,0 +1,2 @@
+defaultBaseImage: cgr.dev/chainguard/busybox:latest
+
